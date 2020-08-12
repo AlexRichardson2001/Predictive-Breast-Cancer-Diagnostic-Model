@@ -1,0 +1,33 @@
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.neighbors import KNeighborsClassifier
+
+cancer = load_breast_cancer()
+# These lines ^ import all of the python libraries I need as well as the breast cancer files as a dataframe.
+
+cancerdf = pd.concat([pd.DataFrame(cancer.data), pd.DataFrame(cancer.target)], axis=1)
+cancerdf.columns = np.append(cancer.feature_names,'target')
+return cancerdf
+# Converts the file data to a dataframe.
+
+target = cancerdf['target'].value_counts()
+target.index = ['benign','malignant']
+return target
+# Returns a class distribution of the breast cancer dataframe.
+
+X = cancerdf.drop('target', axis=1)
+y = cancerdf['target']
+return X, y
+# Returns a split version of the dataframe organized so that each data packet (a patient's cancer diagnosis and associated data) corresponds to the feature statistics.
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+# Splits the dataframe into training and testing groups for the classifier algorithm.
+
+knn = KNeighborsClassifier(n_neighbors = 1) # I set the nearest neighbor parameter to 1 as a default but other values work as well.
+knn.fit(X_train, y_train)
+return knn
+# Generates the classifier model using k nearest neighbor algorithm.
+return knn.score(X_test, y_test)
+# Returns a score of how the classifier performed on the test data.
